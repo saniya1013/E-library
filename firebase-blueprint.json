@@ -1,0 +1,39 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and preferences",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User email"
+        },
+        "favorites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of book IDs favorited by the user"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["uid", "favorites"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "User",
+      "description": "User document containing favorites and profile info"
+    }
+  }
+}
