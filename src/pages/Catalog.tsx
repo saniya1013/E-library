@@ -56,6 +56,10 @@ export function Catalog() {
             />
           </div>
           
+          <button className="h-12 px-8 rounded-xl bg-ink text-paper font-semibold hover:bg-accent transition-colors hidden md:block">
+            Search
+          </button>
+          
           <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
             <Filter size={18} className="text-ink/40 mr-2" />
             {genres.map(genre => (

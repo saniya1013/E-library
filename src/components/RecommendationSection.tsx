@@ -10,16 +10,28 @@ interface RecommendationSectionProps {
   userPreferences: string[];
   favorites: Book[];
   searchHistory?: string[];
+  readingHistory?: string[];
 }
 
-export function RecommendationSection({ userPreferences, favorites, searchHistory = [] }: RecommendationSectionProps) {
+export function RecommendationSection({ 
+  userPreferences, 
+  favorites, 
+  searchHistory = [], 
+  readingHistory = [] 
+}: RecommendationSectionProps) {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchRecommendations = async () => {
     setLoading(true);
     try {
-      const recs = await getBookRecommendations(userPreferences, favorites, SEED_BOOKS, searchHistory);
+      const recs = await getBookRecommendations(
+        userPreferences, 
+        favorites, 
+        SEED_BOOKS, 
+        searchHistory, 
+        readingHistory
+      );
       setRecommendations(recs);
     } catch (error) {
       console.error(error);
@@ -30,7 +42,7 @@ export function RecommendationSection({ userPreferences, favorites, searchHistor
 
   useEffect(() => {
     fetchRecommendations();
-  }, [userPreferences, favorites, searchHistory]);
+  }, [userPreferences, favorites, searchHistory, readingHistory]);
 
   return (
     <section className="py-20 px-6 bg-ink text-paper overflow-hidden">

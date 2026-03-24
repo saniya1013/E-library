@@ -14,6 +14,7 @@ interface AuthContextType {
   updatePreferences: (genres: string[]) => Promise<void>;
   recordSearch: (query: string) => Promise<void>;
   recordReading: (bookId: string) => Promise<void>;
+  updateProfile: (data: Partial<UserProfile>) => Promise<void>;
   isAuthReady: boolean;
 }
 
@@ -143,8 +144,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateProfile = async (data: Partial<UserProfile>) => {
+    if (!user) return;
+    const userDocRef = doc(db, "users", user.uid);
+    try {
+      await updateDoc(userDocRef, data);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, `users/${user.uid}`);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signIn, logout, toggleFavorite, updatePreferences, recordSearch, recordReading, isAuthReady }}>
+    <AuthContext.Provider value={{ user, profile, loading, signIn, logout, toggleFavorite, updatePreferences, recordSearch, recordReading, updateProfile, isAuthReady }}>
       {children}
     </AuthContext.Provider>
   );

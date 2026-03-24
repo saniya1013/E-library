@@ -9,10 +9,19 @@
           "type": "string",
           "description": "Firebase Auth UID"
         },
+        "displayName": {
+          "type": "string",
+          "description": "User's display name"
+        },
         "email": {
           "type": "string",
           "format": "email",
           "description": "User email"
+        },
+        "photoURL": {
+          "type": "string",
+          "format": "uri",
+          "description": "User's profile photo URL"
         },
         "favorites": {
           "type": "array",
@@ -21,13 +30,34 @@
           },
           "description": "List of book IDs favorited by the user"
         },
-        "updatedAt": {
+        "readingHistory": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of book IDs read by the user"
+        },
+        "preferences": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of preferred genres"
+        },
+        "searchHistory": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of recent search queries"
+        },
+        "role": {
           "type": "string",
-          "format": "date-time",
-          "description": "Last update timestamp"
+          "enum": ["admin", "user"],
+          "description": "User role"
         }
       },
-      "required": ["uid", "favorites"]
+      "required": ["uid", "displayName", "email", "favorites", "readingHistory", "preferences", "searchHistory"]
     }
   },
   "firestore": {

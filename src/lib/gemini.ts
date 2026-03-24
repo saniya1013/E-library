@@ -12,7 +12,8 @@ export async function getBookRecommendations(
   userPreferences: string[],
   favorites: Book[],
   allBooks: Book[],
-  searchHistory: string[] = []
+  searchHistory: string[] = [],
+  readingHistory: string[] = []
 ): Promise<{ bookId: string; reason: string }[]> {
   const ai = getAI();
   // Using gemini-3.1-flash-lite-preview as it's the latest flash lite model
@@ -20,16 +21,17 @@ export async function getBookRecommendations(
   
   const prompt = `
     You are a professional librarian and AI recommendation engine for "Lumina Lib".
-    Based on the user's favorite books, their preferred genres, and their recent search history, recommend 3 books from the provided catalog.
+    Based on the user's favorite books, their preferred genres, their recent search history, and their reading history, recommend 3 books from the provided catalog.
     
     User Preferences (Genres): ${userPreferences.join(", ")}
     User Favorites: ${favorites.map(b => b.title).join(", ")}
     Recent Search History: ${searchHistory.join(", ")}
+    Reading History (Titles): ${allBooks.filter(b => readingHistory.includes(b.id)).map(b => b.title).join(", ")}
     
     Catalog:
     ${allBooks.map(b => `ID: ${b.id}, Title: ${b.title}, Author: ${b.author}, Genre: ${b.genre.join(", ")}, Description: ${b.description}`).join("\n")}
     
-    Return a JSON array of objects with "bookId" and "reason" (a short, compelling reason why they would like it, mentioning how it relates to their favorites, preferences, or search history).
+    Return a JSON array of objects with "bookId" and "reason" (a short, compelling reason why they would like it, mentioning how it relates to their favorites, preferences, search history, or reading history).
   `;
 
   try {

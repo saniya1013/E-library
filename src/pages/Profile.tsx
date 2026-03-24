@@ -1,11 +1,20 @@
 import { User as UserIcon, Settings, Shield, Bell, CreditCard, LogOut, Heart, BookOpen, Clock, LogIn, Check } from "lucide-react";
 import { motion } from "motion/react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../AuthContext";
 import { SEED_BOOKS } from "../data";
 
 export function Profile() {
-  const { user, profile, logout, signIn, updatePreferences } = useAuth();
+  const { user, profile, logout, signIn, updatePreferences, updateProfile } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState(profile?.displayName || "");
   const allGenres = Array.from(new Set(SEED_BOOKS.flatMap(b => b.genre)));
+
+  useEffect(() => {
+    if (profile?.displayName) {
+      setNewName(profile.displayName);
+    }
+  }, [profile]);
 
   if (!user) {
     return (
@@ -42,6 +51,13 @@ export function Profile() {
     updatePreferences(updated);
   };
 
+  const handleSaveProfile = async () => {
+    if (newName.trim()) {
+      await updateProfile({ displayName: newName.trim() });
+      setIsEditing(false);
+    }
+  };
+
   return (
     <div className="pt-32 pb-20 px-6 max-w-5xl mx-auto w-full">
       <div className="flex flex-col gap-12">
@@ -53,17 +69,48 @@ export function Profile() {
               <UserIcon size={64} />
             )}
           </div>
-          <div className="flex flex-col gap-2 text-center md:text-left">
-            <h1 className="text-4xl font-serif font-medium">{user.displayName || "Reader"}</h1>
-            <p className="text-ink/40">{user.email}</p>
-            <div className="flex items-center gap-2 mt-2">
-              <button className="px-4 py-2 rounded-full bg-ink text-paper text-xs font-bold uppercase tracking-widest hover:bg-accent transition-colors">
-                Edit Profile
-              </button>
-              <button className="p-2 rounded-full border border-black/10 hover:bg-black/5 transition-colors">
-                <Settings size={16} />
-              </button>
-            </div>
+          <div className="flex flex-col gap-2 text-center md:text-left flex-grow">
+            {isEditing ? (
+              <div className="flex flex-col gap-4">
+                <input 
+                  type="text" 
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  className="text-4xl font-serif font-medium bg-paper border-b border-accent focus:outline-none"
+                  autoFocus
+                />
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={handleSaveProfile}
+                    className="px-4 py-2 rounded-full bg-accent text-white text-xs font-bold uppercase tracking-widest hover:bg-accent-dark transition-colors"
+                  >
+                    Save Changes
+                  </button>
+                  <button 
+                    onClick={() => setIsEditing(false)}
+                    className="px-4 py-2 rounded-full bg-paper text-ink/60 text-xs font-bold uppercase tracking-widest hover:bg-black/5 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <h1 className="text-4xl font-serif font-medium">{profile?.displayName || "Reader"}</h1>
+                <p className="text-ink/40">{user.email}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <button 
+                    onClick={() => setIsEditing(true)}
+                    className="px-4 py-2 rounded-full bg-ink text-paper text-xs font-bold uppercase tracking-widest hover:bg-accent transition-colors"
+                  >
+                    Edit Profile
+                  </button>
+                  <button className="p-2 rounded-full border border-black/10 hover:bg-black/5 transition-colors">
+                    <Settings size={16} />
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

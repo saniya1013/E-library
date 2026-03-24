@@ -13,6 +13,7 @@ export function Home() {
   
   const userPreferences = profile?.preferences.length ? profile.preferences : ["Fantasy", "Science Fiction"];
   const searchHistory = profile?.searchHistory || [];
+  const readingHistory = profile?.readingHistory || [];
   const favoriteBooks = SEED_BOOKS.filter(b => favorites.includes(b.id));
 
   return (
@@ -47,6 +48,7 @@ export function Home() {
         userPreferences={userPreferences} 
         favorites={favoriteBooks} 
         searchHistory={searchHistory}
+        readingHistory={readingHistory}
       />
 
       <section className="px-6 py-20 bg-accent/5">
